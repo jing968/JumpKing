@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2298517900065094975}
   - component: {fileID: 2298517900065094961}
   - component: {fileID: 2298517900065094960}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60,6 +60,7 @@ MonoBehaviour:
   jumpValueIncrements: 0.6
   airbornedPhysics: {fileID: 6200000, guid: e6d9ad9f54386464386f069e3952b204, type: 2}
   groundedPhysics: {fileID: 6200000, guid: 8792f0914c8894837bbb3d14a56603c3, type: 2}
+  learner: {fileID: 0}
 --- !u!212 &2298517900065094975
 SpriteRenderer:
   m_ObjectHideFlags: 0

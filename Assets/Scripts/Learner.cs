@@ -1,23 +1,35 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Learner : MonoBehaviour
 {
+    [Serializable]
+    public class jumpRecord {
+        public float movement;
+        public float jumpValue;
+    }
     public GameObject playerObj;
     public GameObject playerPrefab;
-    private Rigidbody2D playerRB;
-    private Player playerController;
-    private Vector3 playerPos;
+    public GameObject playerContainer;
+    private Vector3 spawnPos;
+    public goodJumpRecorder recorder;
+    public List<jumpRecord> jumpRecords;
+    // Record class for the action
+    
 
     // Start is called before the first frame update
     void Start()
     {
-        playerRB = playerObj.GetComponent<Rigidbody2D>();
-        playerController = playerObj.GetComponent<Player>();
+        // Initialize jump records arraylist
+        jumpRecords = new List<jumpRecord>();
 
         // Storing initial player postion to players
-        playerPos = playerObj.transform.position;
+        spawnPos = playerObj.transform.position;
+
+        // Wipe recorder for a fresh start
+        recorder.wipeRecord();
         
     }
 
@@ -25,7 +37,7 @@ public class Learner : MonoBehaviour
     void Update()
     {
         if(Input.GetKeyUp(KeyCode.H)) {
-            // randomJump();
+            spawnAndJump(1);
         }
     }
 
@@ -34,19 +46,20 @@ public class Learner : MonoBehaviour
     }
 
     void spawnAndJump(int numPlayers){
-
+        GameObject newPlayer = Instantiate(playerPrefab, spawnPos, new Quaternion(), playerContainer.transform);
+        Player playerController = newPlayer.GetComponent<Player>();
+        playerController.randomJump();
     }
 
-
-
-    void test(){
-        float currentPos = playerObj.transform.position.y;
-        print("Current y: " + Mathf.Round(currentPos * 100.0f) * 0.1f);
+    public void saveJumpInfo(float movement, float jumpValue){
+        jumpRecord newRecord = new jumpRecord();
+        newRecord.movement = movement;
+        newRecord.jumpValue = jumpValue;
+        jumpRecords.Add(newRecord);
+        recorder.addRecord(newRecord);
     }
 
-
-    bool validateJump() {
-
-        return true;
+    public void updateSpawnPos(Vector3 newPosition){
+        spawnPos = newPosition;
     }
 }
