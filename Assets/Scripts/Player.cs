@@ -34,6 +34,9 @@ public class Player : MonoBehaviour
         checkAirBorn();
         handleMovement();
         handleJump();
+        if(Input.GetKeyUp(KeyCode.J)) {
+            randomJump();
+        }
     }
 
     void checkAirBorn() {
@@ -80,7 +83,7 @@ public class Player : MonoBehaviour
             Invoke("resetJump", 0.2f);
         }
 
-        // 
+        // Manually release space bar to trigger jump
         if (Input.GetKeyUp("space") ){
             if (!airBorn) {
                 player.velocity = new Vector2(moveSpeed * movements, jumpSpeed * jumpValue);
@@ -93,5 +96,54 @@ public class Player : MonoBehaviour
     void resetJump(){
         jumping = true;
         jumpValue = defaultJumpValue;
+    }
+
+
+    // TO DO : Change to bool function, return true if collided with a collectable
+    // to indicate a good jump. return false otherwised
+    void triggerJump(float movements, float jumpValue) {
+        // print(player);
+        if (player == null) player = gameObject.GetComponent<Rigidbody2D>();
+        // Trigger jump
+        if (!airBorn) {
+            player.velocity = new Vector2(moveSpeed * movements, jumpSpeed * jumpValue);
+            jumpValue = defaultJumpValue;
+        }
+        jumping = false;
+        // Reset Jump
+    }
+
+    public void randomJump(){
+        float initialPos = transform.position.y;
+        print("Initial y: " + Mathf.Round(initialPos * 100.0f) * 0.1f);
+        float randMovement = randomDirection();
+        float randJump = randomJumpForce();
+        triggerJump(randMovement, randJump);
+        // Invoke("test", 1.5f);
+        IEnumerator coroutine =  jumpGood(initialPos);
+        StartCoroutine(coroutine); 
+    }
+
+    IEnumerator jumpGood(float initialPos) {
+        yield return new WaitForSeconds(1.5f);
+        float currentPos = transform.position.y;
+        float roundedInitial = Mathf.Round(initialPos * 100.0f) * 0.1f ;
+        float roundedCurrent = Mathf.Round(currentPos * 100.0f) * 0.1f;
+        bool goodJump = roundedCurrent >= roundedInitial;
+        print("Initial pos: " + roundedInitial + ", Current pos: " + roundedCurrent);
+        if (goodJump) {
+            print("Good Jump");
+        } else {
+            print("Bad Jump");
+        }
+    }
+
+
+    float randomDirection() {
+        return Random.Range(-2f, 2f);
+    }
+
+    float randomJumpForce() {
+        return Random.Range(0f, 20f);
     }
 }
