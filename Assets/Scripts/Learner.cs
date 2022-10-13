@@ -13,6 +13,7 @@ public class Learner : MonoBehaviour
     public GameObject playerObj;
     public GameObject playerPrefab;
     public GameObject playerContainer;
+    public int numLearner;
     private Vector3 spawnPos;
     public goodJumpRecorder recorder;
     public List<jumpRecord> jumpRecords;
@@ -36,8 +37,8 @@ public class Learner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyUp(KeyCode.H)) {
-            spawnAndJump(1);
+        if(Input.GetKeyUp(KeyCode.L)) {
+            spawnAndJump(numLearner);
         }
     }
 
@@ -46,9 +47,11 @@ public class Learner : MonoBehaviour
     }
 
     void spawnAndJump(int numPlayers){
-        GameObject newPlayer = Instantiate(playerPrefab, spawnPos, new Quaternion(), playerContainer.transform);
-        Player playerController = newPlayer.GetComponent<Player>();
-        playerController.randomJump();
+        for (int i = 0; i < numPlayers; i++){
+            GameObject newPlayer = Instantiate(playerPrefab, spawnPos, new Quaternion(), playerContainer.transform);
+            Player playerController = newPlayer.GetComponent<Player>();
+            playerController.randomJump();
+        }
     }
 
     public void saveJumpInfo(float movement, float jumpValue){

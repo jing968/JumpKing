@@ -22,6 +22,7 @@ public class Player : MonoBehaviour
     public PhysicsMaterial2D airbornedPhysics;
     public PhysicsMaterial2D groundedPhysics;
     // Variables only useful for the learner
+    public float validationTimeFrame;
     Learner learner;
 
     // Start is called before the first frame update
@@ -39,9 +40,6 @@ public class Player : MonoBehaviour
         checkAirBorn();
         handleMovement();
         handleJump();
-        if(Input.GetKeyUp(KeyCode.J)) {
-            randomJump();
-        }
     }
 
     void checkAirBorn() {
@@ -130,7 +128,7 @@ public class Player : MonoBehaviour
     }
 
     IEnumerator validateJump(float initialPos, float movement, float jumpValue) {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(validationTimeFrame);
         float currentPos = transform.position.y;
         float roundedInitial = Mathf.Round(initialPos * 100.0f) * 0.1f ;
         float roundedCurrent = Mathf.Round(currentPos * 100.0f) * 0.1f;

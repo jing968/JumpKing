@@ -42929,6 +42929,7 @@ MonoBehaviour:
   playerObj: {fileID: 1021458117}
   playerPrefab: {fileID: 2298517900065094972, guid: ad8425d41a31441e5b27ef65a0be6326, type: 3}
   playerContainer: {fileID: 290050243}
+  numLearner: 5
   recorder: {fileID: 11400000, guid: 7323578868683498d973468a444cd4ce, type: 2}
   jumpRecords: []
 --- !u!4 &1896173605
