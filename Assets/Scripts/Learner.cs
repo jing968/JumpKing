@@ -16,34 +16,47 @@ public class Learner : MonoBehaviour
     public int numLearner;
     private Vector3 spawnPos;
     public goodJumpRecorder recorder;
-    public List<jumpRecord> jumpRecords;
-    // Record class for the action
+    public float waitTimeBetweenJumps;
     
-
     // Start is called before the first frame update
     void Start()
     {
-        // Initialize jump records arraylist
-        jumpRecords = new List<jumpRecord>();
-
-        // Storing initial player postion to players
-        spawnPos = playerObj.transform.position;
-
-        // Wipe recorder for a fresh start
-        recorder.wipeRecord();
         
+    }
+
+    void Awake() {
+        print(recorder.getRecords().Count);
+        GameManager gm = GameManager.gm;
+        if (gm != null) {
+            // Set up reference
+            gm.learner = this;
+
+            // Configurations for LEARNING
+            if (gm.gameState == GameManager.GameStates.Learn) {
+                // Storing initial player postion to players
+                spawnPos = playerObj.transform.position;
+
+                // Remover THE player
+                Destroy(playerObj);
+
+                // Wipe recorder for a fresh start
+                recorder.wipeRecord();
+
+            }
+
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyUp(KeyCode.L)) {
-            spawnAndJump(numLearner);
-        }
+
     }
 
-    void Learn() {
-
+    ///////////////////////////////////////////
+    // Learning related functions
+    public void Learn() {
+        spawnAndJump(numLearner);
     }
 
     void spawnAndJump(int numPlayers){
@@ -58,11 +71,35 @@ public class Learner : MonoBehaviour
         jumpRecord newRecord = new jumpRecord();
         newRecord.movement = movement;
         newRecord.jumpValue = jumpValue;
-        jumpRecords.Add(newRecord);
         recorder.addRecord(newRecord);
     }
 
     public void updateSpawnPos(Vector3 newPosition){
         spawnPos = newPosition;
+    }
+
+    ///////////////////////////////////////////
+    // Testing related functions
+    public void reproduceGoodJumps() {
+        if (GameManager.gm.gameState != GameManager.GameStates.Test) return;
+        IEnumerator coroutine = reproduceGoodJump(0);
+        StartCoroutine(coroutine);
+    }
+
+    IEnumerator reproduceGoodJump(int jumpIndex) {
+        List<jumpRecord> records = recorder.getRecords();
+        // Only reproduce if jumpIndex is within reasonable range
+        if (jumpIndex < records.Count) {
+            Player playerController = playerObj.GetComponent<Player>();
+            float movement = records[jumpIndex].movement;
+            float jumpValue = records[jumpIndex].jumpValue;
+            // Trigger jump
+            playerController.triggerJump(movement, jumpValue);
+            // Wait for the jump to be finalised
+            yield return new WaitForSeconds(waitTimeBetweenJumps);
+            // Trigger next jump
+            IEnumerator coroutine = reproduceGoodJump(jumpIndex + 1);
+            StartCoroutine(coroutine);
+        }
     }
 }

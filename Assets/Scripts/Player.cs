@@ -37,9 +37,13 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        checkAirBorn();
-        handleMovement();
-        handleJump();
+        // Only enable manual controls in playing modes
+        if (GameManager.gm.gameState == GameManager.GameStates.Play) {
+            checkAirBorn();
+            handleMovement();
+            handleJump();   
+        }
+
     }
 
     void checkAirBorn() {
@@ -115,7 +119,7 @@ public class Player : MonoBehaviour
     }
 
 
-    void triggerJump(float movements, float jumpValue) {
+    public void triggerJump(float movements, float jumpValue) {
         // print(player);
         if (player == null) player = gameObject.GetComponent<Rigidbody2D>();
         // Trigger jump
@@ -127,6 +131,7 @@ public class Player : MonoBehaviour
         // Reset Jump
     }
 
+    // Validation logic for LEARNING purposes
     IEnumerator validateJump(float initialPos, float movement, float jumpValue) {
         yield return new WaitForSeconds(validationTimeFrame);
         float currentPos = transform.position.y;
@@ -148,7 +153,7 @@ public class Player : MonoBehaviour
         Destroy(this.gameObject);
     }
 
-
+    // Helper functiosn to randomise jump
     float randomDirection() {
         return Random.Range(-2f, 2f);
     }

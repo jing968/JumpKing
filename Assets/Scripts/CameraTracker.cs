@@ -34,11 +34,19 @@ public class CameraTracker : MonoBehaviour
     }
 
     void manageCamera(){
-        float playerY = player.transform.position.y;
-        if (lowerBound <= playerY && playerY < upperBound) {
-            // Move camera accordingly
-            float newY = 4.4f + (level * 11);
-            camera.transform.position = new Vector3(camera.transform.position.x, newY, -10);
+        GameManager gm = GameManager.gm;
+        
+        if (gm.gameState == GameManager.GameStates.Learn) {
+            // If LEARNING, manaually update camera position according to keyboard inputs
+            
+        } else {
+            // If PLAYING || TESTING, update camera according to player position
+            float playerY = player.transform.position.y;
+            if (lowerBound <= playerY && playerY < upperBound) {
+                // Move camera accordingly
+                float newY = 4.4f + (level * 11);
+                camera.transform.position = new Vector3(camera.transform.position.x, newY, -10);
+            }
         }
     }
 }
