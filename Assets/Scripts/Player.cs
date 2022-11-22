@@ -24,6 +24,7 @@ public class Player : MonoBehaviour
     // Variables only useful for the learner
     public float validationTimeFrame;
     Learner learner;
+    private bool collected = false;
 
     // Start is called before the first frame update
     void Start()
@@ -44,6 +45,20 @@ public class Player : MonoBehaviour
             handleJump();   
         }
 
+    }
+
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.name == "Collectable")
+        {
+            // Keep tracking of collision
+            collected = true;
+            // Destory collectable
+            Destroy(other.gameObject);
+            // Check if its last collectable
+            Collectable collectable = other.gameObject.GetComponent<Collectable>();
+            if (collectable.finishGame) learner.gameFinished = true;
+        }
     }
 
     void checkAirBorn() {
@@ -139,8 +154,9 @@ public class Player : MonoBehaviour
         float roundedCurrent = Mathf.Round(currentPos * 100.0f) * 0.1f;
         bool goodJump = roundedCurrent >= roundedInitial;
         print("Initial pos: " + roundedInitial + ", Current pos: " + roundedCurrent);
-        if (goodJump) {
+        if (goodJump || collected) {
             // Update pos
+            if ( collected ) print("collected");
             print("Good Jump");
             learner.saveJumpInfo(movement,jumpValue);
             learner.updateSpawnPos(transform.position);
@@ -151,6 +167,11 @@ public class Player : MonoBehaviour
 
         // Destory the player either way to save resouces
         Destroy(this.gameObject);
+
+        // Continue to learn if game not finished yet
+        if (!learner.gameFinished) {
+            learner.spawnAndJump();
+        }
     }
 
     // Helper functiosn to randomise jump

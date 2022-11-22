@@ -14,9 +14,11 @@ public class Learner : MonoBehaviour
     public GameObject playerPrefab;
     public GameObject playerContainer;
     public int numLearner;
-    private Vector3 spawnPos;
+    public Vector3 spawnPos;
     public goodJumpRecorder recorder;
     public float waitTimeBetweenJumps;
+    public bool gameFinished = false;
+    public GameObject collectables;
     
     // Start is called before the first frame update
     void Start()
@@ -25,7 +27,7 @@ public class Learner : MonoBehaviour
     }
 
     void Awake() {
-        print(recorder.getRecords().Count);
+        print("Number of good jump in record: " + recorder.getRecords().Count);
         GameManager gm = GameManager.gm;
         if (gm != null) {
             // Set up reference
@@ -42,6 +44,12 @@ public class Learner : MonoBehaviour
                 // Wipe recorder for a fresh start
                 recorder.wipeRecord();
 
+                // Activate Collectables
+                collectables.SetActive(true);
+
+            } else {
+                // Deactivate Collectables
+                collectables.SetActive(false);
             }
 
         }
@@ -56,15 +64,16 @@ public class Learner : MonoBehaviour
     ///////////////////////////////////////////
     // Learning related functions
     public void Learn() {
-        spawnAndJump(numLearner);
+        for (int i = 0; i < numLearner; i++){
+            spawnAndJump();
+        }
     }
 
-    void spawnAndJump(int numPlayers){
-        for (int i = 0; i < numPlayers; i++){
-            GameObject newPlayer = Instantiate(playerPrefab, spawnPos, new Quaternion(), playerContainer.transform);
-            Player playerController = newPlayer.GetComponent<Player>();
-            playerController.randomJump();
-        }
+    public void spawnAndJump(){
+        GameObject newPlayer = Instantiate(playerPrefab, spawnPos, new Quaternion(), playerContainer.transform);
+        Player playerController = newPlayer.GetComponent<Player>();
+        playerController.randomJump();
+        
     }
 
     public void saveJumpInfo(float movement, float jumpValue){

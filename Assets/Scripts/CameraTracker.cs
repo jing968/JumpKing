@@ -16,6 +16,8 @@ public class CameraTracker : MonoBehaviour
     private float lowerBound, upperBound;
     
 
+    public Learner learner;
+
     // Default camera height: 4.4
     // Increment depth: 
 
@@ -25,6 +27,7 @@ public class CameraTracker : MonoBehaviour
         float diff = level * 11f;
         lowerBound = low + diff;
         upperBound = high + diff;
+        print(GameManager.gm.gameState);
     }
 
     // Update is called once per frame
@@ -37,8 +40,13 @@ public class CameraTracker : MonoBehaviour
         GameManager gm = GameManager.gm;
         
         if (gm.gameState == GameManager.GameStates.Learn) {
-            // If LEARNING, manaually update camera position according to keyboard inputs
-            
+            // If LEARNING, update camera position according to spawn position
+            float posY = learner.spawnPos.y;
+            if (lowerBound <= posY && posY < upperBound) {
+                // Move camera accordingly
+                float newY = 4.4f + (level * 11);
+                camera.transform.position = new Vector3(camera.transform.position.x, newY, -10);
+            }
         } else {
             // If PLAYING || TESTING, update camera according to player position
             float playerY = player.transform.position.y;
