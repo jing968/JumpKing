@@ -7,14 +7,18 @@ public class GameManager : MonoBehaviour
     private static GameManager GM;
     public static GameManager gm { get { return GM; } }
     public enum GameStates { Menu, Learn, Test, Play }
-    public Learner learner;
     public GameStates gameState = new GameStates();
 
     
     // Start is called before the first frame update
     void Start()
     {
-        
+        // if( gameState == GameStates.Learn) {
+        //     learner.Learn();
+        //     print("flag");
+        // } else if (gameState == GameStates.Test) {
+        //     learner.reproduceGoodJumps();
+        // }
     }
 
     void Awake()
@@ -32,11 +36,11 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyUp(KeyCode.L) && gameState == GameStates.Learn) {
-            learner.Learn();
-        } else if(Input.GetKeyUp(KeyCode.G) && gameState == GameStates.Test) {
-            learner.reproduceGoodJumps();
-        }
+        // if(Input.GetKeyUp(KeyCode.L) && gameState == GameStates.Learn) {
+        //     learner.Learn();
+        // } else if(Input.GetKeyUp(KeyCode.G) && gameState == GameStates.Test) {
+        //     learner.reproduceGoodJumps();
+        // }
     }
 
     public void setGameState(string gameState) {

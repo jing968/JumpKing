@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Learner : MonoBehaviour
 {
@@ -19,26 +20,30 @@ public class Learner : MonoBehaviour
     public float waitTimeBetweenJumps;
     public bool gameFinished = false;
     public GameObject collectables;
+    int goodJumpCount;
+    public Text goodJumpCountText;
+    public GameObject goodJumpCountDisplay;
     
     // Start is called before the first frame update
     void Start()
     {
-        
+        if( GameManager.gm.gameState == GameManager.GameStates.Learn) {
+            Learn();
+        } else if ( GameManager.gm.gameState == GameManager.GameStates.Test) {
+            print("Number of good jump in record: " + recorder.getRecords().Count);
+            reproduceGoodJumps();
+        }
     }
 
     void Awake() {
-        print("Number of good jump in record: " + recorder.getRecords().Count);
         GameManager gm = GameManager.gm;
         if (gm != null) {
-            // Set up reference
-            gm.learner = this;
-
             // Configurations for LEARNING
             if (gm.gameState == GameManager.GameStates.Learn) {
                 // Storing initial player postion to players
                 spawnPos = playerObj.transform.position;
 
-                // Remover THE player
+                // Remove THE player
                 Destroy(playerObj);
 
                 // Wipe recorder for a fresh start
@@ -47,9 +52,18 @@ public class Learner : MonoBehaviour
                 // Activate Collectables
                 collectables.SetActive(true);
 
+                // Activate Couting Text
+                goodJumpCount = 0;
+                goodJumpCountDisplay.SetActive(true);
+                goodJumpCountText.text = goodJumpCount.ToString();
+
             } else {
                 // Deactivate Collectables
                 collectables.SetActive(false);
+
+                // Activate Couting Text
+                goodJumpCount = 0;
+                goodJumpCountDisplay.SetActive(false);
             }
 
         }
@@ -81,6 +95,10 @@ public class Learner : MonoBehaviour
         newRecord.movement = movement;
         newRecord.jumpValue = jumpValue;
         recorder.addRecord(newRecord);
+        print(recorder.getRecords().Count);
+        // Increment goodJumpCount and update text
+        goodJumpCount += 1;
+        goodJumpCountText.text = goodJumpCount.ToString();
     }
 
     public void updateSpawnPos(Vector3 newPosition){

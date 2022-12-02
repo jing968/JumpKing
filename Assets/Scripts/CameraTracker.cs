@@ -27,7 +27,6 @@ public class CameraTracker : MonoBehaviour
         float diff = level * 11f;
         lowerBound = low + diff;
         upperBound = high + diff;
-        print(GameManager.gm.gameState);
     }
 
     // Update is called once per frame

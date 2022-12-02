@@ -56,6 +56,7 @@ Learning Algorithm
 - [ ] Add support for mulitple learners
 - [ ] Imrpove the learning algorithm
 - [ ] Filter useless "good jumps"
+- [ ] Add ability to pause and resume learning
 
 ## Author
 
